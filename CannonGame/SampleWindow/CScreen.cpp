@@ -35,8 +35,11 @@ bool CScreen::InitScreen(HWND hWnd)
 	RECT rc;
 	GetClientRect(hWnd, &rc);
 
-	int width = rc.right - rc.left;
-	int height = rc.bottom - rc.top;
+	int width = rc.right - rc.left+1;
+	int height = rc.bottom - rc.top+1;
+
+	g_fScreenRight = (float)width;
+	g_fScreenBottom = (float)height;
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
