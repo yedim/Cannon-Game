@@ -19,6 +19,8 @@ private :
 	float m_fBlockCX;
 	float m_fBlockCY;
 	int m_PlayerId;
+	int m_ShipBlockCount;
+	int m_HitScore;
 
 	float m_fStartX;
 	float m_fStartY;
@@ -27,6 +29,10 @@ private :
 	int m_BoardState[BLOCK_MAX][BLOCK_MAX];
 
 	LPDIRECT3DTEXTURE9 m_Textures[BK_MAX];
+
+	void PutSmallShip(int x, int y, int shipId);
+	void PutMediumShip(int x, int y, int shipId);
+	void PutLargeShip(int x, int y, int shipId);
 
 public:
 	explicit CBoard(LPDIRECT3DDEVICE9 pD3DDevice,
@@ -41,6 +47,16 @@ public:
 	void HitTest(float mx, float my, int& rx, int& ry);
 
 	void ChangeBlock(int x, int y);
+
+	bool PutShip(int x, int y, int shipId);
+	bool IsValidPos(int x, int y, int shipId);
+	void ClearShip(int x, int y, int shipId);
+	bool FindShipHead(int x, int y, int& shipId, int& startX);
 	
+	bool Attack(int x, int y);
+	bool IsClicked(int x, int y);
+	bool GetBlockPosition(int x, int y, D3DXVECTOR3& vecPos);
+
+	int GetBlockCount() const { return m_ShipBlockCount; }
 };
 

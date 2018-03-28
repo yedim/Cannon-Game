@@ -14,6 +14,8 @@ CBoard::CBoard(LPDIRECT3DDEVICE9 pD3DDevice,
 	, m_fBlockCX(cx)
 	, m_fBlockCY(cy)
 	, m_PlayerId(playerId)
+	, m_ShipBlockCount(0)
+	, m_HitScore(0)
 {
 	for (int y = 0; y < BLOCK_MAX; ++y)
 	{
@@ -98,4 +100,179 @@ void CBoard::HitTest(float mx, float my, int& rx, int& ry)
 void CBoard::ChangeBlock(int x, int y)
 {
 	m_Board[y][x]->SetTexture(m_Textures[BK_HIT]);
+}
+
+int _GetTailCount(int shipId)
+{
+	switch (shipId)
+	{
+	case 1:
+	case 2:
+		return 1;
+	case 3:
+	case 4:
+		return 2;
+	case 5:
+		return 1;
+	}
+	return -1;
+}
+
+bool CBoard::PutShip(int x, int y, int shipId)
+{
+	int nTailCount = _GetTailCount(shipId);
+
+	if (x >= 0 && (x + nTailCount) < BLOCK_MAX
+		&& y >= 0 && y < BLOCK_MAX)
+	{
+		switch (shipId)
+		{
+		case 1:
+		case 2:
+			PutSmallShip(x, y, shipId);
+			break;
+		case 3:
+		case 4:
+			PutMediumShip(x, y, shipId);
+			break;
+		case 5:
+			PutLargeShip(x, y, shipId);
+			break;
+		}
+		return true;
+	}
+	return false;
+}
+
+void CBoard::PutSmallShip(int x, int y, int shipId)
+{
+	if (m_PlayerId == 0)
+	{
+		m_Board[y][x]->SetTexture(m_Textures[BK_HEAD]);
+		m_Board[y][x+1]->SetTexture(m_Textures[BK_TAIL]);
+	}
+	m_BoardState[y][x] = shipId;
+	m_BoardState[y][x+1] = shipId;
+	m_ShipBlockCount += 2;
+}
+
+void CBoard::PutMediumShip(int x, int y, int shipId)
+{
+	if (m_PlayerId == 0)
+	{
+		m_Board[y][x]->SetTexture(m_Textures[BK_HEAD]);
+		m_Board[y][x + 1]->SetTexture(m_Textures[BK_BODY]);
+		m_Board[y][x + 2]->SetTexture(m_Textures[BK_TAIL]);
+	}
+	m_BoardState[y][x] = shipId;
+	m_BoardState[y][x + 1] = shipId;
+	m_BoardState[y][x + 2] = shipId;
+	m_ShipBlockCount += 3;
+}
+
+void CBoard::PutLargeShip(int x, int y, int shipId)
+{
+	if (m_PlayerId == 0)
+	{
+		m_Board[y][x]->SetTexture(m_Textures[BK_HEAD]);
+		m_Board[y][x + 1]->SetTexture(m_Textures[BK_BODY]);
+		m_Board[y][x + 2]->SetTexture(m_Textures[BK_BODY]);
+		m_Board[y][x + 3]->SetTexture(m_Textures[BK_TAIL]);
+	}
+	m_BoardState[y][x] = shipId;
+	m_BoardState[y][x + 1] = shipId;
+	m_BoardState[y][x + 2] = shipId;
+	m_BoardState[y][x + 3] = shipId;
+	m_ShipBlockCount += 4;
+}
+
+bool CBoard::IsValidPos(int x, int y, int shipId)
+{
+	int nTailCount = _GetTailCount(shipId);
+
+	if (x >= 0 && (x + nTailCount) < BLOCK_MAX
+		&& y >= 0 && y < BLOCK_MAX)
+	{
+		for (int i = x; i <= x + nTailCount; ++i)
+		{
+			if (m_Board[y][i] != 0)
+				return false;
+		}
+		return true;
+	}
+	return false;
+}
+
+void CBoard::ClearShip(int x, int y, int shipId)
+{
+	int nTailCount = _GetTailCount(shipId);
+	if (x >= 0 && (x + nTailCount) < BLOCK_MAX
+		&& y >= 0 && y < BLOCK_MAX)
+	{
+		for (int i = x; i < x + nTailCount; ++i)
+		{
+			m_Board[y][x]->SetTexture(m_Textures[BK_READY]);
+			m_BoardState[y][x] = 0;
+		}
+		m_ShipBlockCount -= (nTailCount + 1);
+	}
+}
+
+bool CBoard::FindShipHead(int x, int y, int& shipId, int& startX)
+{
+	shipId = -1;
+	startX = -1;
+
+	if (x >= 0 && x < BLOCK_MAX && y >= 0 && y < BLOCK_MAX)
+	{
+		if (m_BoardState[y][x] >= 1 && m_BoardState[y][x] <= 5)
+		{
+			shipId = m_BoardState[y][x];
+
+			int n = x;
+			while (n > 0 && m_BoardState[y][n - 1] == shipId)
+				n--;
+			startX = n;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CBoard::Attack(int x, int y)
+{
+	if (m_BoardState[y][x] >= 1 && m_BoardState[y][x] <= 5)
+	{
+		m_BoardState[y][x] += 100;
+		m_HitScore += 100;
+		m_ShipBlockCount--;
+		m_Board[y][x]->SetTexture(m_Textures[BK_HIT]);
+		return true;
+	}
+	else if (m_BoardState[y][x] == 0)
+	{
+		m_BoardState[y][x] = -1;
+		m_Board[y][x]->SetTexture(m_Textures[BK_FAIL]);
+		return true;
+	}
+	return false;
+}
+
+bool CBoard::IsClicked(int x, int y)
+{
+	int state = m_BoardState[x][y];
+
+	if (state == -1 || state >= 100)
+		return true;
+	return false;
+}
+
+bool CBoard::GetBlockPosition(int x, int y, D3DXVECTOR3& vecPos)
+{
+	if (x >= 0 && x < BLOCK_MAX && y >= 0 && y < BLOCK_MAX)
+	{
+		vecPos = m_Board[y][x]->GetPosition();
+		return true;
+	}
+	return false;
 }
