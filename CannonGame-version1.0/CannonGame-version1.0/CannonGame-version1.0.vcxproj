@@ -153,8 +153,10 @@
   <ItemGroup>
     <ClInclude Include="CannonGame-version1.0.h" />
     <ClInclude Include="CBoard.h" />
+    <ClInclude Include="CEffect.h" />
     <ClInclude Include="CScreen.h" />
     <ClInclude Include="CSprite.h" />
+    <ClInclude Include="CText.h" />
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,8 +165,10 @@
   <ItemGroup>
     <ClCompile Include="CannonGame-version1.0.cpp" />
     <ClCompile Include="CBoard.cpp" />
+    <ClCompile Include="CEffect.cpp" />
     <ClCompile Include="CScreen.cpp" />
     <ClCompile Include="CSprite.cpp" />
+    <ClCompile Include="CText.cpp" />
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
