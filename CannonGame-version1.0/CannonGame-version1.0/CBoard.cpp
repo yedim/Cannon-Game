@@ -43,7 +43,7 @@ void CBoard::SetPosition(float sx, float sy)
 	{
 		for (int x = 0; x < BLOCK_MAX; ++x)
 		{
-			m_Board[y][x]->SetPosition(sx + x * m_fBlockWidth, sy + y * m_fBlockWidth);
+			m_Board[y][x]->SetPosition(sx + x * m_fBlockWidth, sy + y * m_fBlockHeight);
 		}
 	}
 	m_fStartX = sx;
@@ -187,7 +187,7 @@ bool CBoard::IsValidPos(int x, int y, int shipId)
 	if (x >= 0 && (x + nTailCnt) < BLOCK_MAX 
 		&& y >= 0 && y < BLOCK_MAX)
 	{
-		for (int i = x; i <= (x + nTailCnt); ++x) //!!! <=
+		for (int i = x; i <= (x + nTailCnt); ++i) //!!! <=
 		{
 			if (m_BoardState[y][i] != 0)
 				return false;
@@ -203,7 +203,7 @@ void CBoard::ClearShip(int x, int y, int shipId)
 
 	if (x >= 0 && (x + nTailCnt) < BLOCK_MAX && y >= 0 && y < BLOCK_MAX)
 	{
-		for (int i = x; i <= (x + nTailCnt); ++x) //!!! <=
+		for (int i = x; i <= (x + nTailCnt); ++i) //!!! <=
 		{
 			m_Board[y][i]->SetTexture(m_Textures[BK_READY]);
 			m_BoardState[y][i] = 0;
@@ -271,7 +271,7 @@ bool CBoard::IsClicked(int x, int y)
 		return true;
 	return false;
 }
-bool CBoard::GetBlockPosition(int x, int y, D3DXVECTOR3 vecPos)
+bool CBoard::GetBlockPosition(int x, int y, D3DXVECTOR3& vecPos)
 {
 	if (x >= 0 && x < BLOCK_MAX && y >= 0 && y < BLOCK_MAX)
 	{

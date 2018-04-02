@@ -20,7 +20,7 @@ public:
 	{
 		m_Pos = D3DXVECTOR3(x,y,0);
 	}
-	const D3DXVECTOR3 GetPosition() const
+	const D3DXVECTOR3& GetPosition() const //!!!getPosition¿∫ &
 	{
 		return m_Pos;
 	}

@@ -50,7 +50,7 @@ public:
 
 	bool Attack(int x, int y);
 	bool IsClicked(int x, int y);
-	bool GetBlockPosition(int x, int y, D3DXVECTOR3 vecPos);//!!! boolÇü
+	bool GetBlockPosition(int x, int y, D3DXVECTOR3& vecPos);//!!! boolÇü°ú &!!!
 
 	int GetHitScore() { return m_HitScore; }
 	int GetBlockCount() { return m_ShipBlockCount; }
