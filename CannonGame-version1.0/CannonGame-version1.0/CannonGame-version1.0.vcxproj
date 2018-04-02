@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CannonGame-version1.0.h" />
+    <ClInclude Include="CBoard.h" />
     <ClInclude Include="CScreen.h" />
     <ClInclude Include="CSprite.h" />
     <ClInclude Include="CTexture.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CannonGame-version1.0.cpp" />
+    <ClCompile Include="CBoard.cpp" />
     <ClCompile Include="CScreen.cpp" />
     <ClCompile Include="CSprite.cpp" />
     <ClCompile Include="CTexture.cpp" />
