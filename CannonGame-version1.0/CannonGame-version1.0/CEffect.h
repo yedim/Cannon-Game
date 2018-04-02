@@ -5,11 +5,12 @@ class CEffect
 {
 private:
 	CSprite * m_spr[SPR_MAX];
-	bool m_bAlive;
-	int m_frame;
 	DWORD m_dwPrevTime;
+	int m_frame;
 
 public:
+	bool m_bAlive;
+
 	explicit CEffect(LPDIRECT3DDEVICE9 pD3Device, LPDIRECT3DTEXTURE9 texture
 	,float cx,float cy);
 	virtual ~CEffect();
